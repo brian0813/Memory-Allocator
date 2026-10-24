@@ -1,0 +1,13 @@
+# VS Code workspace
+*.code-workspace
+.vscode/
+
+# Compiled files
+*.exe
+*.o
+*.obj
+
+# Debug files
+*.out
+
+
