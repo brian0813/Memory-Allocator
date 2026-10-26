@@ -10,22 +10,32 @@ int main(void)
     int *c = my_malloc(sizeof(int));
 
     if (a == NULL || b == NULL || c == NULL)
-    {
-        printf("Allocation failed\n");
         return 1;
-    }
 
-    *a = 1;
-    *b = 2233;
-    *c = 445566;
+    *a = 100;
+    *b = 200;
+    *c = 300;
 
-    printf("a = %d\n", *a);
-    printf("b = %d\n", *b);
-    printf("c = %d\n", *c);
+    printf("Before free:\n");
+    printf("a = %p\n", (void *)a);
+    printf("b = %p\n", (void *)b);
+    printf("c = %p\n", (void *)c);
 
-    printf("Address a = %p\n", (void *)a);
-    printf("Address b = %p\n", (void *)b);
-    printf("Address c = %p\n", (void *)c);
+    // Release block B
+    my_free(b);
+    b = NULL;
+
+    // Allocate another block
+    int *d = my_malloc(sizeof(int));
+
+    if (d == NULL)
+        return 1;
+
+    *d = 400;
+
+    printf("\nAfter free:\n");
+    printf("d = %p\n", (void *)d);
+    printf("d value = %d\n", *d);
 
     return 0;
 }
