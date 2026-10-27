@@ -1,41 +1,57 @@
 #include <stdio.h>
+#include <assert.h>
+#include <stdint.h>
 #include "allocator.h"
 
 int main(void)
 {
     allocator_init();
 
-    int *a = my_malloc(sizeof(int));
-    int *b = my_malloc(sizeof(int));
+    // Initial allocation
+    void *a = my_malloc(128);
+    void *b = my_malloc(32);
     int *c = my_malloc(sizeof(int));
 
-    if (a == NULL || b == NULL || c == NULL)
-        return 1;
+    // Memory allocation confirmed
+    assert(a != NULL && b != NULL && c != NULL);
 
-    *a = 100;
-    *b = 200;
     *c = 300;
 
-    printf("Before free:\n");
-    printf("a = %p\n", (void *)a);
-    printf("b = %p\n", (void *)b);
-    printf("c = %p\n", (void *)c);
+    printf("Initial allocation:\n");
+    printf("A = %p\n", a);
+    printf("B = %p\n", b);
+    printf("C = %p\n", (void *)c);
 
-    // Release block B
+    // Test 1: Block Splitting
+    my_free(a);
+
+    void *d = my_malloc(32);
+    void *e = my_malloc(64);
+
+    assert(d != NULL && e != NULL);
+    assert(d == a);
+
+    printf("\nAfter splitting:\n");
+    printf("D = %p\n", d);
+    printf("E = %p\n", e);
+
+    // Test 2: Block Coalescing
+    my_free(d);
+    my_free(e);
     my_free(b);
-    b = NULL;
 
-    // Allocate another block
-    int *d = my_malloc(sizeof(int));
+    // Requires merging free blocks
+    void *f = my_malloc(176);
 
-    if (d == NULL)
-        return 1;
+    assert(f != NULL);
+    assert(f == a);
+    assert(*c == 300);
 
-    *d = 400;
+    printf("\nAfter coalescing:\n");
+    printf("F = %p\n", f);
+    printf("C value = %d\n", *c);
 
-    printf("\nAfter free:\n");
-    printf("d = %p\n", (void *)d);
-    printf("d value = %d\n", *d);
+    printf("\nAll tests passed!\n");
 
     return 0;
 }
