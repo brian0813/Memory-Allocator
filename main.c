@@ -12,7 +12,6 @@ int main(void)
     void *b = my_malloc(32);
     int *c = my_malloc(sizeof(int));
 
-    // Memory allocation confirmed
     assert(a != NULL && b != NULL && c != NULL);
 
     *c = 300;
